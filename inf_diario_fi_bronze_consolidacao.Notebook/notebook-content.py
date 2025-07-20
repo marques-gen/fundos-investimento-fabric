@@ -171,7 +171,8 @@ for arquivo in os.listdir(caminho_raw):
             for nome_arquivo in zip_ref.namelist():
                 with zip_ref.open(nome_arquivo) as file:
                     try:
-                        df = pd.read_csv(file, sep=";", encoding="latin1", decimal=",")
+                        df = pd.read_csv(file, sep=";", encoding="latin1", decimal=",",dtype={'VL_QUOTA': str})                                          
+                                        
                         df = padronizar_colunas(df, de_para_colunas) # verificar melhor abordagem
                         schema.validate(df, lazy=True)
 
@@ -288,5 +289,15 @@ else:
 
 # META {
 # META   "language": "sparksql",
+# META   "language_group": "synapse_pyspark"
+# META }
+
+# CELL ********************
+
+
+# METADATA ********************
+
+# META {
+# META   "language": "python",
 # META   "language_group": "synapse_pyspark"
 # META }

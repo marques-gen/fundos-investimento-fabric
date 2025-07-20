@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Environment",
+    "displayName": "env-fundos-investimento",
+    "description": "Ambiente"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "8f414a67-85b3-8506-4728-15fb7f59e460"
+  }
+}
