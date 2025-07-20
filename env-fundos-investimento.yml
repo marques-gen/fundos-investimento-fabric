@@ -1,0 +1,7 @@
+name: env-fundos-investimento
+dependencies:
+  - python=3.12
+  - pip
+  - pip:
+      - pandera
+      
