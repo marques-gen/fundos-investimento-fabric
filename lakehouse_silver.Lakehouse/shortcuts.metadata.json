@@ -1,0 +1,15 @@
+[
+  {
+    "name": "inf_diario_fi_bronze_consolidacao",
+    "path": "/Tables",
+    "target": {
+      "type": "OneLake",
+      "oneLake": {
+        "path": "Tables/inf_diario_fi_bronze_consolidacao",
+        "itemId": "c5026821-9ef4-9fd4-4352-362bfc7d1418",
+        "workspaceId": "00000000-0000-0000-0000-000000000000",
+        "artifactType": "Lakehouse"
+      }
+    }
+  }
+]

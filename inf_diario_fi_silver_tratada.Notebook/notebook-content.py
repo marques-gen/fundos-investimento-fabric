@@ -8,12 +8,12 @@
 # META   },
 # META   "dependencies": {
 # META     "lakehouse": {
-# META       "default_lakehouse": "17881140-eaa2-46ea-a531-f18138b080af",
-# META       "default_lakehouse_name": "lakehouse_fundos_investimento",
+# META       "default_lakehouse": "89f4ebd1-af7a-4952-b5fa-35e29f7ee358",
+# META       "default_lakehouse_name": "lakehouse_silver",
 # META       "default_lakehouse_workspace_id": "61df9dee-1bf7-4985-975b-82a6be49a59a",
 # META       "known_lakehouses": [
 # META         {
-# META           "id": "17881140-eaa2-46ea-a531-f18138b080af"
+# META           "id": "89f4ebd1-af7a-4952-b5fa-35e29f7ee358"
 # META         }
 # META       ]
 # META     }

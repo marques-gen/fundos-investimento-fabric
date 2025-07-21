@@ -8,12 +8,12 @@
 # META   },
 # META   "dependencies": {
 # META     "lakehouse": {
-# META       "default_lakehouse": "17881140-eaa2-46ea-a531-f18138b080af",
-# META       "default_lakehouse_name": "lakehouse_fundos_investimento",
+# META       "default_lakehouse": "fc7d1418-362b-4352-9fd4-9ef4c5026821",
+# META       "default_lakehouse_name": "lakehouse_bronze",
 # META       "default_lakehouse_workspace_id": "61df9dee-1bf7-4985-975b-82a6be49a59a",
 # META       "known_lakehouses": [
 # META         {
-# META           "id": "17881140-eaa2-46ea-a531-f18138b080af"
+# META           "id": "fc7d1418-362b-4352-9fd4-9ef4c5026821"
 # META         }
 # META       ]
 # META     }
@@ -50,7 +50,7 @@ BASE_URL = "https://dados.cvm.gov.br/dados/FI/CAD/DADOS/"
 #LOCAL_TEMP = "/lakehouse/default/Files/raw/inf_diario_fi_temp"
 
 # Pasta final no Lakehouse - RAW
-LAKEHOUSE_RAW_PATH = "/lakehouse/default/Files/raw/registro_fundo_classe/"
+LAKEHOUSE_RAW_PATH = "/lakehouse/default/Files/landing/registro_fundo_classe/"
 
 # Cria diretórios se não existirem
 #Path(LOCAL_TEMP).mkdir(parents=True, exist_ok=True)
@@ -139,79 +139,46 @@ def listar_arquivos_lakehouse():
 # META   "language_group": "synapse_pyspark"
 # META }
 
-# MARKDOWN ********************
-
-# # =============================================
-# #  Fazer download incremental
-# # =============================================
-# 
-# # Setup de logging
-# logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
-# 
-# def baixar_e_salvar_incremental(df_portal: pd.DataFrame, df_lakehouse: pd.DataFrame) -> List[str]:
-#     novos_arquivos = []
-# 
-#     # Pré-processamento: cria dicionário com últimas datas do Lakehouse
-#     d_lakehouse = df_lakehouse.set_index("arquivo")["data_modificacao"].to_dict()
-# 
-#     for row in df_portal.itertuples(index=False):
-#         nome = row.arquivo
-#         data_portal = row.data_modificacao
-#         url = row.url
-# 
-#         data_lakehouse = d_lakehouse.get(nome)
-# 
-#         if data_lakehouse is None or (data_portal and data_portal > data_lakehouse):
-#             try:
-#                 logging.info(f"Baixando: {nome}")
-#                 response = requests.get(url, headers=HEADERS, timeout=20)
-# 
-#                 if response.status_code == 200:
-#                     destino = Path(f"{LAKEHOUSE_RAW_PATH}/{nome}")
-#                     destino.write_bytes(response.content)
-#                     novos_arquivos.append(nome)
-#                     time.sleep(random.uniform(5, 10))  # Anti-robô
-#                 else:
-#                     logging.warning(f"Falha no download: {nome} - Status: {response.status_code}")
-# 
-#             except Exception as e:
-#                 logging.error(f"Erro ao baixar {nome}: {e}")
-# 
-#     logging.info(f" {len(novos_arquivos)} arquivos baixados.")
-#     return novos_arquivos
-
-
 # CELL ********************
 
-from notebookutils import mssparkutils
-import requests, logging, time, random
+# =============================================
+#  Fazer download incremental
+# =============================================
 
-def baixar_e_salvar_incremental(df_portal, df_lakehouse):
-    novos = []
-    d_lake = df_lakehouse.set_index("arquivo")["data_modificacao"].to_dict()
-    dir_lake = "Files/raw/registro_fundo_classe"
-    if not mssparkutils.fs.exists(dir_lake):
-        mssparkutils.fs.mkdirs(dir_lake)
+# Setup de logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+
+def baixar_e_salvar_incremental(df_portal: pd.DataFrame, df_lakehouse: pd.DataFrame) -> List[str]:
+    novos_arquivos = []
+
+    # Pré-processamento: cria dicionário com últimas datas do Lakehouse
+    d_lakehouse = df_lakehouse.set_index("arquivo")["data_modificacao"].to_dict()
 
     for row in df_portal.itertuples(index=False):
-        nome, data_portal, url = row.arquivo, row.data_modificacao, row.url
-        if d_lake.get(nome) is None or (data_portal and data_portal > d_lake[nome]):
+        nome = row.arquivo
+        data_portal = row.data_modificacao
+        url = row.url
+
+        data_lakehouse = d_lakehouse.get(nome)
+
+        if data_lakehouse is None or (data_portal and data_portal > data_lakehouse):
             try:
                 logging.info(f"Baixando: {nome}")
-                resp = requests.get(url, headers=HEADERS, timeout=20)
-                if resp.status_code == 200:
-                    mssparkutils.fs.put(
-                        f"{dir_lake}/{nome}", resp.content, overwrite=True
-                    )
-                    novos.append(nome)
-                    time.sleep(random.uniform(5, 10))
+                response = requests.get(url, headers=HEADERS, timeout=20)
+
+                if response.status_code == 200:
+                    destino = Path(f"{LAKEHOUSE_RAW_PATH}/{nome}")
+                    destino.write_bytes(response.content)
+                    novos_arquivos.append(nome)
+                    time.sleep(random.uniform(5, 10))  # Anti-robô
                 else:
-                    logging.warning(f"Falha download {nome}: {resp.status_code}")
+                    logging.warning(f"Falha no download: {nome} - Status: {response.status_code}")
+
             except Exception as e:
                 logging.error(f"Erro ao baixar {nome}: {e}")
 
-    logging.info(f"{len(novos)} arquivos baixados.")
-    return novos
+    logging.info(f" {len(novos_arquivos)} arquivos baixados.")
+    return novos_arquivos
 
 
 # METADATA ********************

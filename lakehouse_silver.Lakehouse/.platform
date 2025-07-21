@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
   "metadata": {
     "type": "Lakehouse",
-    "displayName": "lakehouse_fundos_investimento"
+    "displayName": "lakehouse_silver"
   },
   "config": {
     "version": "2.0",
-    "logicalId": "38b080af-f181-a531-46ea-eaa217881140"
+    "logicalId": "9f7ee358-35e2-b5fa-4952-af7a89f4ebd1"
   }
 }
