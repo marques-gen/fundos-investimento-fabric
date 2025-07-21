@@ -8,12 +8,12 @@
 # META   },
 # META   "dependencies": {
 # META     "lakehouse": {
-# META       "default_lakehouse": "17881140-eaa2-46ea-a531-f18138b080af",
-# META       "default_lakehouse_name": "lakehouse_fundos_investimento",
+# META       "default_lakehouse": "fc7d1418-362b-4352-9fd4-9ef4c5026821",
+# META       "default_lakehouse_name": "lakehouse_bronze",
 # META       "default_lakehouse_workspace_id": "61df9dee-1bf7-4985-975b-82a6be49a59a",
 # META       "known_lakehouses": [
 # META         {
-# META           "id": "17881140-eaa2-46ea-a531-f18138b080af"
+# META           "id": "fc7d1418-362b-4352-9fd4-9ef4c5026821"
 # META         }
 # META       ]
 # META     }
@@ -50,7 +50,7 @@ BASE_URL = "https://dados.cvm.gov.br/dados/FI/DOC/INF_DIARIO/DADOS/"
 #LOCAL_TEMP = "/lakehouse/default/Files/raw/inf_diario_fi_temp"
 
 # Pasta final no Lakehouse - RAW
-LAKEHOUSE_RAW_PATH = "/lakehouse/default/Files/raw/inf_diario_fi"
+LAKEHOUSE_RAW_PATH = "/lakehouse/default/Files/landing/inf_diario_fi"
 
 # Cria diretórios se não existirem
 #Path(LOCAL_TEMP).mkdir(parents=True, exist_ok=True)

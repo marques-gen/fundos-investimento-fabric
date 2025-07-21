@@ -8,12 +8,12 @@
 # META   },
 # META   "dependencies": {
 # META     "lakehouse": {
-# META       "default_lakehouse": "17881140-eaa2-46ea-a531-f18138b080af",
-# META       "default_lakehouse_name": "lakehouse_fundos_investimento",
+# META       "default_lakehouse": "fc7d1418-362b-4352-9fd4-9ef4c5026821",
+# META       "default_lakehouse_name": "lakehouse_bronze",
 # META       "default_lakehouse_workspace_id": "61df9dee-1bf7-4985-975b-82a6be49a59a",
 # META       "known_lakehouses": [
 # META         {
-# META           "id": "17881140-eaa2-46ea-a531-f18138b080af"
+# META           "id": "fc7d1418-362b-4352-9fd4-9ef4c5026821"
 # META         }
 # META       ]
 # META     }
@@ -52,12 +52,12 @@ from pyspark.sql.functions import year, month
 from delta.tables import DeltaTable
 
 # Diretórios do Lakehouse
-caminho_raw = "/lakehouse/default/Files/raw/inf_diario_fi"
+caminho_raw = "/lakehouse/default/Files/landing/inf_diario_fi"
 caminho_bronze= "/lakehouse/default/Files/bronze"
 tabela_bronze = "inf_diario_fi_bronze_consolidacao"
 
 # ⚙️ Configuração de Logging
-log_path = "/lakehouse/default/Files/bronze/log_validacao.txt"
+log_path = "/lakehouse/default/Files/logs/log_validacao.txt"
 
 logging.basicConfig(filename=log_path, level=logging.INFO, format='%(asctime)s - %(message)s')
 
@@ -192,6 +192,37 @@ for arquivo in os.listdir(caminho_raw):
                         erros_schema.append(erros)
 
                         logging.warning(f"Schema inválido - {nome_arquivo}: {len(erros)} erros")
+
+
+# METADATA ********************
+
+# META {
+# META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
+
+# CELL ********************
+
+spark.sql("""
+CREATE TABLE IF NOT EXISTS inf_diario_fi_bronze_consolidacao (
+    TP_FUNDO STRING,
+    CNPJ_FUNDO STRING,
+    DT_COMPTC STRING,
+    VL_TOTAL STRING,
+    VL_QUOTA STRING,
+    VL_PATRIM_LIQ STRING,
+    CAPTC_DIA STRING,
+    RESG_DIA STRING,
+    NR_COTST BIGINT,
+    arquivo STRING,
+    data_modificacao TIMESTAMP,
+    ano INT,
+    mes INT,
+    ID_SUBCLASSE STRING
+)
+USING DELTA
+""")
+
 
 
 # METADATA ********************
