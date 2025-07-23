@@ -91,7 +91,8 @@ import pandas as pd
 import os
 from datetime import datetime
 from bs4 import BeautifulSoup
-from typing import Tuple
+#from typing import Tuple
+import shutil
 
 # origem - Portal
 url="https://dados.cvm.gov.br/dados/FI/CAD/DADOS/"
@@ -263,7 +264,6 @@ df_arquivos=extrair_metadados_arquivos(url,destino)
 #  Converter Pandas para Spark
 df_arquivos_spark=spark.createDataFrame(df_arquivos)
 
-
 df_arquivos_spark = df_arquivos_spark.withColumn("data_modificacao", to_timestamp("data_modificacao"))
 
 # Carrega a tabela Delta
@@ -292,12 +292,9 @@ print(arquivos_nao_carregados)
 
 # CELL ********************
 
-import requests
-import zipfile
-import io
-import pandas as pd
-import shutil
-
+# =======================================================================
+# Scritp main - realiza ingestão incremental
+#========================================================================
 inputvalues=converter_df_dict(url,destino)
 
 #for index, (dest,zipname) in enumerate(inputvalues,start=1):
@@ -334,8 +331,12 @@ for index, (zipname,dest) in enumerate(inputvalues.items(), start=1):
 # CELL ********************
 
 # MAGIC %%sql   
-# MAGIC SELECT *
-# MAGIC from ingestion_control_bronze
+# MAGIC SELECT 
+# MAGIC     nome_arquivo
+# MAGIC     ,count(1) as qtd_versoes
+# MAGIC from ingestion_control_bronze limite
+# MAGIC group BY
+# MAGIC     nome_arquivo
 
 # METADATA ********************
 
