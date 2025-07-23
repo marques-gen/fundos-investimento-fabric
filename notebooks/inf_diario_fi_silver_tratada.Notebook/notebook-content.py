@@ -37,7 +37,7 @@ spark.sql("""
         ,cast(t1.CAPTC_DIA AS decimal(18,2)) as CAPTC_DIA
         ,cast(t1.RESG_DIA as DECIMAL(18,2)) as RESG_DIA
         ,data_modificacao as DATA_MODIFICACAO
-        ,row_number() over( partition by t1.CNPJ_FUNDO,t1.DT_COMPTC order by t1.data_modificacao desc) as nr_ord
+        ,row_number() over( partition by t1.CNPJ_FUNDO,t1.TP_FUNDO,t1.DT_COMPTC order by t1.data_modificacao desc) as nr_ord
 
 from inf_diario_fi_bronze_consolidacao t1
 """)
@@ -59,7 +59,8 @@ from inf_diario_fi_bronze_consolidacao t1
 
 spark.sql("""
     CREATE TABLE IF NOT EXISTS inf_diario_fi_silver_tratada (
-        CNPJ_FUNDO string
+        TP_FUNDO string
+        ,CNPJ_FUNDO string
         ,DT_COMPTC date 
         ,VL_TOTAL decimal(18,2)
         ,VL_QUOTA decimal(18,2) 
@@ -88,7 +89,8 @@ spark.sql("""
 spark.sql("""
 INSERT INTO inf_diario_fi_silver_tratada
 SELECT
-        t1.CNPJ_FUNDO
+        TP_FUNDO
+        ,t1.CNPJ_FUNDO
         ,t1.DT_COMPTC
         ,t1.VL_TOTAL
         ,t1.VL_QUOTA
@@ -103,6 +105,7 @@ where not exists(
 
                     from inf_diario_fi_silver_tratada t2
                     where t1.CNPJ_FUNDO=T2.CNPJ_FUNDO
+                    AND T1.TP_FUNDO=T2.TP_FUNDO
                     AND T1.DT_COMPTC=T2.DT_COMPTC
                     AND T1.DATA_MODIFICACAO=T2.DATA_MODIFICACAO
                     
@@ -118,6 +121,19 @@ AND T1.NR_ORD=1 -- Considera ultima alteração
 
 # META {
 # META   "language": "python",
+# META   "language_group": "synapse_pyspark"
+# META }
+
+# CELL ********************
+
+# MAGIC %%sql
+# MAGIC 
+# MAGIC SELECT COUNT(1) FROM inf_diario_fi_silver_tratada
+
+# METADATA ********************
+
+# META {
+# META   "language": "sparksql",
 # META   "language_group": "synapse_pyspark"
 # META }
 
