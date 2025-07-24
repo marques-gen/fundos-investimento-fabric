@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "DataPipeline",
+    "displayName": "data_pipeline_fundos_investimento"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "982c0e44-fbfa-baf1-481d-0a4968d46056"
+  }
+}
